@@ -1,3 +1,6 @@
+# graphify generated index (regenerate with `graphify update .`)
+graphify-out/
+
 # Logs
 logs
 *.log
