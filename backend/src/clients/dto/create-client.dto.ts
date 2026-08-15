@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Status } from '@prisma/client';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateClientDto {
   @ApiProperty()
@@ -12,10 +12,14 @@ export class CreateClientDto {
   @IsString()
   lastName?: string;
 
+  @ApiProperty()
+  @IsString()
+  phone: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  phone?: string;
+  phone2?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -41,4 +45,16 @@ export class CreateClientDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiPropertyOptional({ description: 'Логин для входа клиента в веб-приложение' })
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  login?: string;
+
+  @ApiPropertyOptional({ description: 'Обязателен, если указан login' })
+  @IsOptional()
+  @IsString()
+  @MinLength(8)
+  password?: string;
 }

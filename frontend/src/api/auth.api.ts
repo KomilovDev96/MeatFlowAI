@@ -14,4 +14,12 @@ export const authApi = {
     const { data } = await apiClient.post<{ success: boolean }>('/auth/logout');
     return data;
   },
+  async telegramWebAppLogin(initData: string) {
+    const { data } = await apiClient.post<AuthResponse>('/auth/telegram-webapp', { initData });
+    return data;
+  },
+  async getTelegramCode() {
+    const { data } = await apiClient.post<{ code: string; expiresAt: string }>('/auth/telegram-code');
+    return data;
+  },
 };

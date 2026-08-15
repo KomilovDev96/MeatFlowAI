@@ -27,4 +27,33 @@ export class CompaniesService {
     await this.audit.write({ userId: user.id, companyId: id, action: 'update_company', entity: 'Company', entityId: id });
     return company;
   }
+
+  async remove(id: string, actorId: string) {
+    const company = await this.prisma.company.findUnique({ where: { id } });
+    if (!company) throw new NotFoundException('Company not found');
+
+    const [admins, clients, products, sales] = await Promise.all([
+      this.prisma.user.count({ where: { companyId: id } }),
+      this.prisma.client.count({ where: { companyId: id } }),
+      this.prisma.product.count({ where: { companyId: id } }),
+      this.prisma.sale.count({ where: { companyId: id } }),
+    ]);
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.sale.deleteMany({ where: { companyId: id } });
+      await tx.user.deleteMany({ where: { companyId: id } });
+      await tx.company.delete({ where: { id } });
+    });
+
+    await this.audit.write({
+      userId: actorId,
+      companyId: null,
+      action: 'delete_company',
+      entity: 'Company',
+      entityId: id,
+      metadata: { companyName: company.name, admins, clients, products, sales },
+    });
+
+    return { success: true };
+  }
 }

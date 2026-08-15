@@ -20,10 +20,11 @@ export class AnalyticsService {
     if (user.role !== Role.SUPER_ADMIN && user.companyId !== companyId) throw new ForbiddenException('Company scope violation');
     const company = await this.prisma.company.findUnique({ where: { id: companyId } });
     if (!company) throw new NotFoundException('Company not found');
-    const [clients, products, admins, lastAudit] = await Promise.all([
+    const [clients, products, admins, sales, lastAudit] = await Promise.all([
       this.prisma.client.count({ where: { companyId } }),
       this.prisma.product.count({ where: { companyId } }),
       this.prisma.user.count({ where: { companyId, role: Role.ADMIN } }),
+      this.prisma.sale.count({ where: { companyId } }),
       this.prisma.auditLog.findFirst({ where: { companyId }, orderBy: { createdAt: 'desc' } }),
     ]);
     return {
@@ -34,6 +35,7 @@ export class AnalyticsService {
       clients,
       products,
       admins,
+      sales,
       lastActivityAt: lastAudit?.createdAt ?? null,
     };
   }

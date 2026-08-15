@@ -10,7 +10,8 @@ async function main() {
     update: {},
     create: {
       role: Role.SUPER_ADMIN,
-      fullName: 'MeatFlow Super Admin',
+      firstName: 'MeatFlow',
+      lastName: 'Super Admin',
       login: 'superadmin',
       passwordHash,
       status: Status.ACTIVE,
@@ -25,6 +26,8 @@ async function main() {
       name: 'Demo Meat Company',
       phone: '+998901112233',
       address: 'Tashkent',
+      latitude: 41.311081,
+      longitude: 69.240562,
       description: 'Local demo company',
       currency: 'UZS',
       measurementUnit: ProductUnit.KG,
@@ -36,7 +39,8 @@ async function main() {
     update: {},
     create: {
       role: Role.ADMIN,
-      fullName: 'Demo Admin',
+      firstName: 'Demo',
+      lastName: 'Admin',
       login: 'admin',
       passwordHash,
       phone: '+998909998877',

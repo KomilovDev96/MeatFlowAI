@@ -9,9 +9,11 @@ import { AuthModule } from './auth/auth.module';
 import { AdminsModule } from './admins/admins.module';
 import { ClientsModule } from './clients/clients.module';
 import { CompaniesModule } from './companies/companies.module';
+import { PaymentsModule } from './payments/payments.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductsModule } from './products/products.module';
 import { QueueModule } from './queue/queue.module';
+import { SalesModule } from './sales/sales.module';
 import { StorageModule } from './storage/storage.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { TelegramModule } from './telegram/telegram.module';
@@ -39,6 +41,8 @@ import { UsersModule } from './users/users.module';
     CompaniesModule,
     ClientsModule,
     ProductsModule,
+    SalesModule,
+    PaymentsModule,
     AnalyticsModule,
     AuditModule,
     TelegramModule,

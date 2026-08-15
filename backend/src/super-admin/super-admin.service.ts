@@ -15,12 +15,24 @@ export class SuperAdminService {
     const passwordHash = await bcrypt.hash(dto.password, 12);
     const result = await this.prisma.$transaction(async (tx) => {
       const company = await tx.company.create({
-        data: { name: dto.companyName, avatar: dto.companyAvatar, status: dto.status ?? Status.ACTIVE },
+        data: {
+          name: dto.companyName,
+          avatar: dto.companyLogo,
+          phone: dto.companyPhone,
+          address: dto.companyAddress,
+          latitude: dto.companyLatitude,
+          longitude: dto.companyLongitude,
+          currency: dto.companyCurrency,
+          measurementUnit: dto.companyMeasurementUnit,
+          status: dto.status ?? Status.ACTIVE,
+        },
       });
       const admin = await tx.user.create({
         data: {
           role: Role.ADMIN,
-          fullName: dto.fullName,
+          firstName: dto.firstName,
+          lastName: dto.lastName,
+          avatar: dto.avatar,
           login: dto.login,
           passwordHash,
           phone: dto.phone,

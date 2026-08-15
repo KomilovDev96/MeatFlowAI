@@ -37,6 +37,11 @@ export class ClientsController {
     return this.clients.update(id, dto, user);
   }
 
+  @Post(':id/telegram-code')
+  generateTelegramCode(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.clients.generateTelegramCode(id, user);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string, @CurrentUser() user: any) {
     return this.clients.remove(id, user);

@@ -1,20 +1,22 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Status } from '@prisma/client';
-import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
+import { ProductUnit, Status } from '@prisma/client';
+import { IsEnum, IsLatitude, IsLongitude, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateAdminDto {
+  // Owner (Admin) fields
   @ApiProperty()
   @IsString()
-  fullName: string;
-
-  @ApiProperty()
-  @IsString()
-  companyName: string;
+  firstName: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  companyAvatar?: string;
+  lastName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  avatar?: string;
 
   @ApiProperty()
   @IsString()
@@ -44,4 +46,44 @@ export class CreateAdminDto {
   @IsOptional()
   @IsEnum(Status)
   status?: Status;
+
+  // Company fields
+  @ApiProperty()
+  @IsString()
+  companyName: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  companyLogo?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  companyPhone?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  companyAddress?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsLatitude()
+  companyLatitude?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsLongitude()
+  companyLongitude?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  companyCurrency?: string;
+
+  @ApiPropertyOptional({ enum: ProductUnit })
+  @IsOptional()
+  @IsEnum(ProductUnit)
+  companyMeasurementUnit?: ProductUnit;
 }

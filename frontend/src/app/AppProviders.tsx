@@ -1,7 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { App as AntApp, ConfigProvider, theme as antTheme } from 'antd';
+import { App as AntApp, ConfigProvider } from 'antd';
+import ruRU from 'antd/locale/ru_RU';
+import uzUZ from 'antd/locale/uz_UZ';
 import type { PropsWithChildren } from 'react';
-import { useUiStore } from '../stores/ui.store';
+import { useTranslation } from 'react-i18next';
 import { getAntTheme } from '../styles/theme';
 
 const queryClient = new QueryClient({
@@ -11,16 +13,12 @@ const queryClient = new QueryClient({
 });
 
 export function AppProviders({ children }: PropsWithChildren) {
-  const themeMode = useUiStore((state) => state.themeMode);
+  const { i18n } = useTranslation();
+  const antLocale = i18n.language === 'ru' ? ruRU : uzUZ;
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ConfigProvider
-        theme={{
-          ...getAntTheme(themeMode),
-          algorithm: themeMode === 'dark' ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
-        }}
-      >
+      <ConfigProvider theme={getAntTheme()} locale={antLocale}>
         <AntApp>{children}</AntApp>
       </ConfigProvider>
     </QueryClientProvider>

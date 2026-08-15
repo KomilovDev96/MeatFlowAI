@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -29,5 +29,11 @@ export class CompaniesController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateCompanyDto, @CurrentUser() user: any) {
     return this.companies.update(id, dto, user);
+  }
+
+  @Roles(Role.SUPER_ADMIN)
+  @Delete(':id')
+  remove(@Param('id') id: string, @CurrentUser() user: any) {
+    return this.companies.remove(id, user.id);
   }
 }
