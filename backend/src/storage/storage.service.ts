@@ -14,6 +14,10 @@ export class StorageService implements OnModuleInit {
   private readonly endpoint: string;
   private readonly port: number;
   private readonly useSSL: boolean;
+  /** Client used only to sign URLs the browser will call; its host must be the one the browser reaches. */
+  private readonly signer: Minio.Client;
+  /** Base URL the browser uses for the storage, e.g. http://203.0.113.5:9000 (no trailing slash). */
+  private readonly publicBase: string;
 
   constructor(private readonly config: ConfigService) {
     this.endpoint = this.config.get('MINIO_ENDPOINT', 'localhost');
@@ -27,6 +31,26 @@ export class StorageService implements OnModuleInit {
       accessKey: this.config.getOrThrow('MINIO_ACCESS_KEY'),
       secretKey: this.config.getOrThrow('MINIO_SECRET_KEY'),
     });
+
+    // In Docker the backend reaches storage as "minio:9000", which a browser cannot resolve.
+    // STORAGE_PUBLIC_URL is the address the browser can reach; URLs are signed for that host.
+    const publicUrl = this.config.get<string>('STORAGE_PUBLIC_URL');
+    if (publicUrl) {
+      const url = new URL(publicUrl);
+      const ssl = url.protocol === 'https:';
+      this.publicBase = `${url.protocol}//${url.host}`;
+      this.signer = new Minio.Client({
+        endPoint: url.hostname,
+        port: url.port ? Number(url.port) : ssl ? 443 : 80,
+        useSSL: ssl,
+        accessKey: this.config.getOrThrow('MINIO_ACCESS_KEY'),
+        secretKey: this.config.getOrThrow('MINIO_SECRET_KEY'),
+        region: 'us-east-1', // avoids a network lookup that would run against the public host
+      });
+    } else {
+      this.publicBase = `${this.useSSL ? 'https' : 'http'}://${this.endpoint}:${this.port}`;
+      this.signer = this.client;
+    }
   }
 
   async onModuleInit() {
@@ -58,8 +82,8 @@ export class StorageService implements OnModuleInit {
     const folder = dto.folder ?? 'avatars';
     const extension = dto.filename.match(/\.([a-zA-Z0-9]+)$/)?.[1];
     const key = `${folder}/${randomUUID()}${extension ? `.${extension}` : ''}`;
-    const uploadUrl = await this.client.presignedPutObject(this.bucket, key, UPLOAD_URL_EXPIRY_SECONDS);
-    const publicUrl = `${this.useSSL ? 'https' : 'http'}://${this.endpoint}:${this.port}/${this.bucket}/${key}`;
+    const uploadUrl = await this.signer.presignedPutObject(this.bucket, key, UPLOAD_URL_EXPIRY_SECONDS);
+    const publicUrl = `${this.publicBase}/${this.bucket}/${key}`;
     return { uploadUrl, publicUrl, key };
   }
 }
