@@ -16,6 +16,8 @@ DOMAIN="${1:-}"
 EMAIL="${2:-}"
 [ -n "$DOMAIN" ] && [ -n "$EMAIL" ] || { echo "Usage: bash domain-setup.sh <domain> <email>"; exit 1; }
 [ "$(id -u)" -eq 0 ] || { echo "Run as root"; exit 1; }
+# fail early on a placeholder / typo: Let's Encrypt rejects invalid addresses
+echo "$EMAIL" | grep -Eq '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' || { echo "'$EMAIL' is not a valid email address (use your real one, Latin letters only)."; exit 1; }
 command -v apt-get >/dev/null 2>&1 || { echo "This script supports Debian/Ubuntu (apt-get)."; exit 1; }
 
 DEPLOY_USER=deploy
