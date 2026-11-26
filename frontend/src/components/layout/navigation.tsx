@@ -1,4 +1,4 @@
-import { BarChart3, Building2, ClipboardList, Warehouse, LayoutDashboard, Package, ShieldCheck, UserRoundCog, Users } from 'lucide-react';
+import { BarChart3, Bot, Building2, ClipboardList, Warehouse, LayoutDashboard, Package, ShieldCheck, UserRoundCog, Users } from 'lucide-react';
 import type { Role } from '../../types/auth';
 
 export type NavItem = {
@@ -12,6 +12,7 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   { key: 'dashboard', labelKey: 'nav.dashboard', path: '/', icon: <LayoutDashboard size={18} />, roles: ['SUPER_ADMIN', 'ADMIN', 'CLIENT'] },
   { key: 'admins', labelKey: 'nav.admins', path: '/admins', icon: <UserRoundCog size={18} />, roles: ['SUPER_ADMIN'] },
+  { key: 'telegram-bot', labelKey: 'nav.telegramBot', path: '/telegram-bot', icon: <Bot size={18} />, roles: ['SUPER_ADMIN'] },
   { key: 'companies', labelKey: 'nav.companies', path: '/companies', icon: <Building2 size={18} />, roles: ['SUPER_ADMIN', 'ADMIN'] },
   { key: 'clients', labelKey: 'nav.clients', path: '/clients', icon: <Users size={18} />, roles: ['ADMIN'] },
   { key: 'orders', labelKey: 'nav.orders', path: '/orders', icon: <ClipboardList size={18} />, roles: ['ADMIN'] },

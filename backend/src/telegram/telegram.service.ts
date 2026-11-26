@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PaymentMethod, Prisma, Role } from '@prisma/client';
 import * as ExcelJS from 'exceljs';
@@ -10,7 +10,10 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ReportsService } from '../reports/reports.service';
 import { SalesService } from '../sales/sales.service';
 
-const BTN_BUYURTMA = '🛍 Buyurtma berish';
+const TOKEN_KEY = 'telegram_bot_token';
+const TOKEN_PATTERN = /^\d{6,}:[A-Za-z0-9_-]{30,}$/;
+
+const BTN_BUYURTMA ='🛍 Buyurtma berish';
 const BTN_HARIDLARIM ='🛒 Haridlarim';
 const BTN_QARZLARIM = '💰 Qarzlarim';
 const BTN_TOLOVLARIM = "💳 To'lovlarim";
@@ -58,13 +61,75 @@ export class TelegramService implements OnModuleInit, OnModuleDestroy {
   }
 
   status() {
-    return { configured: Boolean(this.config.get('TELEGRAM_BOT_TOKEN')), botUsername: this.botUsername };
+    return { configured: this.bot !== null, botUsername: this.botUsername };
   }
 
-  async onModuleInit() {
-    const token = this.config.get<string>('TELEGRAM_BOT_TOKEN');
+  /**
+   * A token saved from the super-admin panel wins over TELEGRAM_BOT_TOKEN.
+   * An empty saved value means "deleted on purpose" so the env fallback stays off.
+   */
+  private async resolveToken(): Promise<{ token: string | null; source: 'database' | 'env' | 'none' }> {
+    const row = await this.prisma.appSetting.findUnique({ where: { key: TOKEN_KEY } });
+    if (row) return row.value ? { token: row.value, source: 'database' } : { token: null, source: 'none' };
+    const env = this.config.get<string>('TELEGRAM_BOT_TOKEN');
+    return env ? { token: env, source: 'env' } : { token: null, source: 'none' };
+  }
+
+  private mask(token: string | null) {
+    if (!token) return null;
+    const [id, secret = ''] = token.split(':');
+    return `${id}:${secret.slice(0, 2)}${'•'.repeat(8)}${secret.slice(-3)}`;
+  }
+
+  async botConfig() {
+    const { token, source } = await this.resolveToken();
+    return { configured: Boolean(token), running: this.bot !== null, botUsername: this.botUsername, source, tokenMasked: this.mask(token) };
+  }
+
+  /** Validates the token with Telegram, saves it and (re)starts the bot right away. */
+  async setToken(token: string, userId: string) {
+    const trimmed = token.trim();
+    if (!TOKEN_PATTERN.test(trimmed)) throw new BadRequestException('Token formati noto‘g‘ri');
+    let username: string;
+    try {
+      username = (await new Telegraf(trimmed).telegram.getMe()).username;
+    } catch {
+      throw new BadRequestException('Telegram bu tokenni qabul qilmadi. Tokenni tekshiring.');
+    }
+    await this.prisma.appSetting.upsert({ where: { key: TOKEN_KEY }, update: { value: trimmed }, create: { key: TOKEN_KEY, value: trimmed } });
+    await this.audit.write({ userId, companyId: null, action: 'telegram_bot_token_set', entity: 'AppSetting', entityId: TOKEN_KEY });
+    await this.restart();
+    this.logger.log(`Bot token updated, @${username}`);
+    return this.botConfig();
+  }
+
+  async removeToken(userId: string) {
+    await this.prisma.appSetting.upsert({ where: { key: TOKEN_KEY }, update: { value: '' }, create: { key: TOKEN_KEY, value: '' } });
+    await this.audit.write({ userId, companyId: null, action: 'telegram_bot_token_removed', entity: 'AppSetting', entityId: TOKEN_KEY });
+    await this.restart();
+    return this.botConfig();
+  }
+
+  private async restart() {
+    await this.stopBot();
+    await this.startBot();
+  }
+
+  private async stopBot() {
+    const bot = this.bot;
+    this.bot = null;
+    this.botUsername = null;
+    try {
+      bot?.stop('restart');
+    } catch {
+      // not polling yet — nothing to stop
+    }
+  }
+
+  private async startBot() {
+    const { token } = await this.resolveToken();
     if (!token) {
-      this.logger.warn('TELEGRAM_BOT_TOKEN is not set — Telegram bot is disabled');
+      this.logger.warn('Telegram bot token is not set — Telegram bot is disabled');
       return;
     }
     const bot = new Telegraf(token);
@@ -80,6 +145,10 @@ export class TelegramService implements OnModuleInit, OnModuleDestroy {
     } catch (error) {
       this.logger.error('Failed to start Telegram bot', error as Error);
     }
+  }
+
+  async onModuleInit() {
+    await this.startBot();
   }
 
   onModuleDestroy() {

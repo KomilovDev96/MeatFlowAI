@@ -259,6 +259,12 @@ model StockReceipt {
   @@index([receivedAt])
 }
 
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 model ClientOrder {
   id          String            @id @default(uuid())
   number      Int               @unique @default(autoincrement())

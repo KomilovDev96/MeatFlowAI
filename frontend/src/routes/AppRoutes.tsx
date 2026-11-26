@@ -11,6 +11,7 @@ import { ProductsPage } from '../features/products/ProductsPage';
 import { ReportsPage } from '../features/reports/ReportsPage';
 import { StockPage } from '../features/stock/StockPage';
 import { SuperAdminDashboardPage } from '../features/super-admin/SuperAdminDashboardPage';
+import { TelegramBotPage } from '../features/telegram-bot/TelegramBotPage';
 import { TelegramOrderPage } from '../features/telegram-app/TelegramOrderPage';
 import { useAuthStore } from '../stores/auth.store';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -30,6 +31,7 @@ export function AppRoutes() {
         <Route path="/tg/orders/new" element={<TelegramOrderPage />} />
         <Route path="/" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
         <Route path="/admins" element={<ProtectedRoute roles={['SUPER_ADMIN']}><AdminsPage /></ProtectedRoute>} />
+        <Route path="/telegram-bot" element={<ProtectedRoute roles={['SUPER_ADMIN']}><TelegramBotPage /></ProtectedRoute>} />
         <Route path="/companies" element={<ProtectedRoute roles={['SUPER_ADMIN', 'ADMIN']}><CompaniesPage /></ProtectedRoute>} />
         <Route path="/clients" element={<ProtectedRoute roles={['ADMIN']}><ClientsPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute roles={['ADMIN']}><OrdersPage /></ProtectedRoute>} />

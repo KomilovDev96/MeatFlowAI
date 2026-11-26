@@ -80,7 +80,8 @@
     "products": "Mahsulotlar",
     "profile": "Profil",
     "stock": "Ombor / kirimlar",
-    "reports": "Hisobot va foyda"
+    "reports": "Hisobot va foyda",
+    "telegramBot": "Telegram-bot"
   },
   "layout": {
     "appName": "MeatFlow AI",
@@ -446,5 +447,33 @@
     "salesCount": "Sotuvlar",
     "receiptsCount": "Kirimlar",
     "hint": "Foyda = tushum − tannarx (sotuv paytidagi xarid narxi × kg). Qoldiq va uning qiymati bugungi kun uchun."
+  },
+  "telegramBot": {
+    "title": "Telegram-bot",
+    "description": "Bot tokeni serverda saqlanadi. O'zgarishlar darhol qo'llanadi, qayta ishga tushirish shart emas.",
+    "statusTitle": "Holat",
+    "state": "Holati",
+    "running": "Ishlayapti",
+    "notRunning": "Token bor, bot ishlamayapti",
+    "notConfigured": "Sozlanmagan",
+    "bot": "Bot",
+    "token": "Token",
+    "source": "Token manbasi",
+    "source_database": "Shu yerda saqlangan (bazada)",
+    "source_env": "Server sozlamalari (.env)",
+    "source_none": "Yo'q",
+    "envHint": "Token server sozlamalarida berilgan. Bu yerda yangi token saqlansa, o'sha ishlatiladi.",
+    "addTitle": "Token qo'shish",
+    "replaceTitle": "Tokenni almashtirish",
+    "tokenLabel": "Bot tokeni",
+    "tokenHelp": "Tokenni @BotFather'dan oling. Saqlashdan oldin Telegram'da tekshiriladi va keyin to'liq ko'rsatilmaydi.",
+    "addButton": "Qo'shish va ishga tushirish",
+    "replaceButton": "Almashtirish va qayta ishga tushirish",
+    "deleteButton": "Tokenni o'chirish",
+    "deleteConfirm": "Token o'chirilsinmi? Bot ishlashdan to'xtaydi.",
+    "saved": "Token saqlandi, @{{username}} boti ishga tushdi",
+    "saveFailed": "Tokenni saqlab bo'lmadi",
+    "removed": "Token o'chirildi, bot to'xtatildi",
+    "removeFailed": "Tokenni o'chirib bo'lmadi"
   }
 }

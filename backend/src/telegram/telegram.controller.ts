@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 import { IsOptional, IsString } from 'class-validator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { TelegramService } from './telegram.service';
+
+class BotTokenDto {
+  @IsString()
+  token: string;
+}
 
 class ConnectTelegramDto {
   @IsString()
@@ -22,6 +30,30 @@ export class TelegramController {
   @Get('status')
   status() {
     return this.telegram.status();
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SUPER_ADMIN)
+  @Get('bot')
+  botConfig() {
+    return this.telegram.botConfig();
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SUPER_ADMIN)
+  @Put('bot')
+  setToken(@Body() dto: BotTokenDto, @CurrentUser() user: any) {
+    return this.telegram.setToken(dto.token, user.id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.SUPER_ADMIN)
+  @Delete('bot')
+  removeToken(@CurrentUser() user: any) {
+    return this.telegram.removeToken(user.id);
   }
 
   @Post('start')
