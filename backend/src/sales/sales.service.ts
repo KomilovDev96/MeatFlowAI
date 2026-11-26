@@ -46,7 +46,7 @@ export class SalesService {
         await tx.product.update({ where: { id: product.id }, data: { stock: product.stock.sub(delta) } });
 
         totalAmount = totalAmount.add(itemTotal);
-        itemsData.push({ productId: item.productId, quantityPieces, quantityKg, pricePerKg, totalAmount: itemTotal });
+        itemsData.push({ productId: item.productId, quantityPieces, quantityKg, pricePerKg, costPerKg: product.purchasePrice, totalAmount: itemTotal });
       }
 
       return tx.sale.create({
@@ -113,7 +113,7 @@ export class SalesService {
       await tx.product.update({ where: { id: product.id }, data: { stock: product.stock.sub(delta) } });
 
       totalAmount = totalAmount.add(itemTotal);
-      itemsData.push({ productId: item.productId, quantityPieces, quantityKg, pricePerKg, totalAmount: itemTotal });
+      itemsData.push({ productId: item.productId, quantityPieces, quantityKg, pricePerKg, costPerKg: product.purchasePrice, totalAmount: itemTotal });
     }
     return { totalAmount, itemsData };
   }

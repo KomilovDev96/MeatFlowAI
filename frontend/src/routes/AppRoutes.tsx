@@ -8,6 +8,8 @@ import { OrdersPage } from '../features/orders/OrdersPage';
 import { ProfilePage } from '../features/profile/ProfilePage';
 import { AdminDashboardPage } from '../features/products/AdminDashboardPage';
 import { ProductsPage } from '../features/products/ProductsPage';
+import { ReportsPage } from '../features/reports/ReportsPage';
+import { StockPage } from '../features/stock/StockPage';
 import { SuperAdminDashboardPage } from '../features/super-admin/SuperAdminDashboardPage';
 import { TelegramOrderPage } from '../features/telegram-app/TelegramOrderPage';
 import { useAuthStore } from '../stores/auth.store';
@@ -32,6 +34,8 @@ export function AppRoutes() {
         <Route path="/clients" element={<ProtectedRoute roles={['ADMIN']}><ClientsPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute roles={['ADMIN']}><OrdersPage /></ProtectedRoute>} />
         <Route path="/products" element={<ProtectedRoute roles={['ADMIN']}><ProductsPage /></ProtectedRoute>} />
+        <Route path="/stock" element={<ProtectedRoute roles={['ADMIN']}><StockPage /></ProtectedRoute>} />
+        <Route path="/reports" element={<ProtectedRoute roles={['ADMIN']}><ReportsPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute roles={['ADMIN', 'CLIENT']}><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

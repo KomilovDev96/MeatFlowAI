@@ -13,6 +13,8 @@ import { PaymentsModule } from './payments/payments.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductsModule } from './products/products.module';
 import { QueueModule } from './queue/queue.module';
+import { ReceiptsModule } from './receipts/receipts.module';
+import { ReportsModule } from './reports/reports.module';
 import { SalesModule } from './sales/sales.module';
 import { StorageModule } from './storage/storage.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
@@ -44,6 +46,8 @@ import { UsersModule } from './users/users.module';
     SalesModule,
     PaymentsModule,
     AnalyticsModule,
+    ReceiptsModule,
+    ReportsModule,
     AuditModule,
     TelegramModule,
     StorageModule,

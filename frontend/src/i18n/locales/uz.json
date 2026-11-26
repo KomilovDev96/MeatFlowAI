@@ -78,7 +78,9 @@
     "clients": "Mijozlar",
     "orders": "Buyurtmalar",
     "products": "Mahsulotlar",
-    "profile": "Profil"
+    "profile": "Profil",
+    "stock": "Ombor / kirimlar",
+    "reports": "Hisobot va foyda"
   },
   "layout": {
     "appName": "MeatFlow AI",
@@ -407,5 +409,42 @@
     "EUR": "Yevro",
     "RUB": "Rossiya rubli",
     "KZT": "Qozog'iston tengesi"
+  },
+  "stock": {
+    "title": "Ombor: tovar kirimlari",
+    "description": "Omborga tovar kirimi. Qoldiq oshadi, xarid narxi o'rtacha tortilgan holda hisoblanadi.",
+    "addButton": "Kirim qo'shish",
+    "createTitle": "Yangi tovar kirimi",
+    "product": "Mahsulot",
+    "currentStock": "Hozir omborda",
+    "quantity": "Miqdor",
+    "unitCost": "Birlik uchun xarid narxi",
+    "total": "Kirim summasi",
+    "supplier": "Yetkazib beruvchi",
+    "date": "Sana",
+    "note": "Izoh",
+    "createdSuccess": "Kirim qo'shildi",
+    "createFailed": "Kirimni qo'shib bo'lmadi",
+    "deletedSuccess": "Kirim o'chirildi, qoldiq kamaydi",
+    "deleteFailed": "Kirimni o'chirib bo'lmadi",
+    "deleteConfirm": "Kirim o'chirilsinmi? Qoldiq kamayadi."
+  },
+  "reports": {
+    "title": "Hisobot: qoldiq, sotuv, foyda",
+    "description": "Kirimlar, sotuvlar, tushum va foydani ko'rish uchun davrni tanlang.",
+    "product": "Mahsulot",
+    "stock": "Qoldiq",
+    "stockValue": "Qoldiq qiymati",
+    "received": "Davr kirimi",
+    "receivedCost": "Xarid summasi",
+    "sold": "Sotildi",
+    "revenue": "Tushum",
+    "cost": "Tannarx",
+    "profit": "Foyda",
+    "margin": "Rentabellik",
+    "unpaid": "To'lanmagan sotuvlar",
+    "salesCount": "Sotuvlar",
+    "receiptsCount": "Kirimlar",
+    "hint": "Foyda = tushum − tannarx (sotuv paytidagi xarid narxi × kg). Qoldiq va uning qiymati bugungi kun uchun."
   }
 }
