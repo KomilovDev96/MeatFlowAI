@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminsModule } from './admins/admins.module';
+import { ClientOrdersModule } from './client-orders/client-orders.module';
 import { ClientsModule } from './clients/clients.module';
 import { CompaniesModule } from './companies/companies.module';
 import { PaymentsModule } from './payments/payments.module';
@@ -47,6 +48,7 @@ import { UsersModule } from './users/users.module';
     PaymentsModule,
     AnalyticsModule,
     ReceiptsModule,
+    ClientOrdersModule,
     ReportsModule,
     AuditModule,
     TelegramModule,

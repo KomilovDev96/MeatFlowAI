@@ -29,6 +29,12 @@ enum SaleType {
   CONSIGNMENT
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
 enum PaymentMethod {
   CASH
   TRANSFER
@@ -54,6 +60,7 @@ model Company {
   sales           Sale[]
   payments        Payment[]
   receipts        StockReceipt[]
+  clientOrders    ClientOrder[]
   auditLogs       AuditLog[]
 
   @@index([status])
@@ -113,6 +120,7 @@ model Client {
   lastActivityAt               DateTime?
   sales                        Sale[]
   payments                     Payment[]
+  orders                       ClientOrder[]
 
   @@index([companyId])
   @@index([phone])
@@ -137,6 +145,7 @@ model Product {
   updatedAt     DateTime    @updatedAt
   saleItems     SaleItem[]
   receipts      StockReceipt[]
+  orderItems    ClientOrderItem[]
 
   @@index([companyId])
   @@index([status])
@@ -248,4 +257,35 @@ model StockReceipt {
   @@index([companyId])
   @@index([productId])
   @@index([receivedAt])
+}
+
+model ClientOrder {
+  id          String            @id @default(uuid())
+  number      Int               @unique @default(autoincrement())
+  companyId   String
+  company     Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      Client            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  status      OrderStatus       @default(PENDING)
+  note        String?
+  items       ClientOrderItem[]
+  saleId      String?
+  decidedById String?
+  decidedAt   DateTime?
+  createdAt   DateTime          @default(now())
+
+  @@index([companyId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model ClientOrderItem {
+  id        String      @id @default(uuid())
+  orderId   String
+  order     ClientOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Decimal     @db.Decimal(12, 3)
+
+  @@index([orderId])
 }
