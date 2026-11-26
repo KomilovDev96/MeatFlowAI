@@ -137,6 +137,10 @@ jobs:
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_ACTOR" --password-stdin
             export IMAGE_TAG="$NEW_TAG"
             docker compose -f docker-compose.prod.yml pull
+            # Bring up the data services first and sync the DB schema BEFORE the backend starts:
+            # on a fresh database the backend crashes on boot (missing tables), so a
+            # post-start "exec prisma db push" can never run.
+            docker compose -f docker-compose.prod.yml up -d --wait postgres redis minio
+            docker compose -f docker-compose.prod.yml run --rm --no-deps backend npx prisma db push
             docker compose -f docker-compose.prod.yml up -d
-            docker compose -f docker-compose.prod.yml exec -T backend npx prisma db push
             docker image prune -f

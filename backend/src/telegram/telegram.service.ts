@@ -148,7 +148,12 @@ export class TelegramService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit() {
-    await this.startBot();
+    try {
+      await this.startBot();
+    } catch (error) {
+      // the bot is optional: a settings/DB problem must never stop the API from booting
+      this.logger.error('Telegram bot disabled: could not start', error as Error);
+    }
   }
 
   onModuleDestroy() {
